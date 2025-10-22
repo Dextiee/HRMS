@@ -155,7 +155,7 @@ export default function TasksPage() {
         supabase.from('projects').select('id, project_name')
       ])
       
-      const projectMap = new Map(projectsData?.data?.map((p: Project) => [p.id, p.project_name]) || [])
+      const projectMap = new Map(projectsData?.data?.map((p: any) => [p.id, p.project_name]) || [])
       
       const today = new Date()
       today.setHours(0, 0, 0, 0)
@@ -279,7 +279,7 @@ export default function TasksPage() {
               supabase.from('projects').select('id, project_name')
             ])
             
-            const projectMap = new Map(projectsData?.data?.map((p: Project) => [p.id, p.project_name]) || [])
+            const projectMap = new Map(projectsData?.data?.map((p: any) => [p.id, p.project_name]) || [])
             const today = new Date()
             today.setHours(0, 0, 0, 0)
             
