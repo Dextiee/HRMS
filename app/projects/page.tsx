@@ -142,7 +142,7 @@ export default function ProjectsPage() {
         .from('employees')
         .select('id, name')
       
-      const employeeMap = new Map(employeesData?.map((e: Employee) => [e.id, e.name]) || [])
+      const employeeMap = new Map(employeesData?.map((e: any) => [e.id, e.name]) || [])
       
       const enrichedTasks = tasksData.map((task: Task) => ({
         ...task,
