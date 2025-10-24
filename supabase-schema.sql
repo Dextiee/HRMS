@@ -65,6 +65,20 @@ CREATE TABLE tasks (
     CHECK (task_deadline >= CURRENT_DATE)
 );
 
+-- Appointments table
+CREATE TABLE appointments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    appointment_name TEXT NOT NULL,
+    appointment_date DATE NOT NULL,
+    appointment_time TIME NOT NULL,
+    assigned_employee UUID NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
+    appointment_status TEXT NOT NULL DEFAULT 'Active' CHECK (appointment_status IN ('Active', 'Confirmed', 'Completed', 'Cancelled', 'Rescheduled')),
+    appointment_info TEXT,
+    google_calendar_event_id TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- ============================================
 -- INDEXES for Performance
 -- ============================================
@@ -77,6 +91,9 @@ CREATE INDEX idx_payroll_generated ON payroll(generated_on DESC);
 CREATE INDEX idx_tasks_project ON tasks(project_id);
 CREATE INDEX idx_tasks_assigned ON tasks(assigned_to);
 CREATE INDEX idx_tasks_deadline ON tasks(task_deadline);
+CREATE INDEX idx_appointments_employee ON appointments(assigned_employee);
+CREATE INDEX idx_appointments_date ON appointments(appointment_date DESC);
+CREATE INDEX idx_appointments_status ON appointments(appointment_status);
 CREATE INDEX idx_employees_email ON employees(email);
 CREATE INDEX idx_employees_status ON employees(employment_status);
 
@@ -90,6 +107,7 @@ ALTER TABLE attendance ENABLE ROW LEVEL SECURITY;
 ALTER TABLE payroll ENABLE ROW LEVEL SECURITY;
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
 
 -- ============================================
 -- RLS POLICIES
@@ -158,6 +176,19 @@ CREATE POLICY "authenticated_users_update_tasks" ON tasks
     FOR UPDATE USING (auth.role() = 'authenticated');
 
 CREATE POLICY "authenticated_users_delete_tasks" ON tasks
+    FOR DELETE USING (auth.role() = 'authenticated');
+
+-- Appointments policies
+CREATE POLICY "authenticated_users_select_appointments" ON appointments
+    FOR SELECT USING (auth.role() = 'authenticated');
+
+CREATE POLICY "authenticated_users_insert_appointments" ON appointments
+    FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+
+CREATE POLICY "authenticated_users_update_appointments" ON appointments
+    FOR UPDATE USING (auth.role() = 'authenticated');
+
+CREATE POLICY "authenticated_users_delete_appointments" ON appointments
     FOR DELETE USING (auth.role() = 'authenticated');
 
 -- ============================================

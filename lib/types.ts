@@ -53,3 +53,16 @@ export interface Task {
   attachment_type?: string | null
 }
 
+export interface Appointment {
+  id: string
+  appointment_name: string
+  appointment_date: string
+  appointment_time: string
+  assigned_employee: string
+  appointment_status: 'Active' | 'Confirmed' | 'Completed' | 'Cancelled' | 'Rescheduled'
+  appointment_info: string | null
+  google_calendar_event_id: string | null
+  created_at: string
+  updated_at: string
+}
+

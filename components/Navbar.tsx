@@ -55,6 +55,7 @@ export default function Navbar() {
     { href: '/payroll', label: 'Payroll' },
     { href: '/projects', label: 'Projects' },
     { href: '/tasks', label: 'Tasks' },
+    { href: '/appointments', label: 'Appointments' },
   ]
 
   return (
